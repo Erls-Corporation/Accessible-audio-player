@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+<meta charset="UTF-8">
+<title>Accessible Audio Player (AAP) 2.1.3 Test Page</title>
+<!-- 
+	// the following styles apply to the presentation of the current test page only
+	// all styles for the player itself are contained within aap.css
+-->
+<style>
+body { 
+	margin: 0 1em;
+	font-family: Arial, Helvetica, sans-serif;
+	color: black;
+	background: white;
+	font-size: 1em;
+	line-height: 1.5em;
+}
+#content { 
+	margin: 0 1em;
+}
+#wrapper { 
+	float: left;
+	width: 500px; /* slightly wider than #aap-player */
+}
+.offscreen { 
+	position:absolute;
+	left:-10000px;
+	top:auto;
+	width:1px;
+	height:1px;
+	overflow:hidden;
+}
+</style>
+
+<!-- link to the AAP CSS file. TO modify colors or other styles, see aap.css-->
+<link rel="stylesheet" href="aap.css" type="text/css"/>
+
+<!--	Fallback for browsers that don't support HTML5 audio is Yahoo! Media Player (YMP) -->
+<!-- Define variables for YMP (must be defined *before* calling player.js) -->
+<script>
+	var volume = 0.5; //0 to 1, not too loud by default or you'll drown out screen readers
+	var YMPParams = 
+	{
+		volume:volume,
+		displaystate:3, //hide default Yahoo player - we want to use our own
+		autoplay:false, //change to true to start playing automatically (also add autoplay attrib to <audio>) 
+		parse:false		//will parse mp3 links later if browser doesn't support HTML5 audio
+	}
+</script>
+
+
+<!-- 
+	YMP is an evolving product. As this is a fallback player, my aim is to 
+	find a version that works reasonably well, and stick with it. 
+	"Stable version", old URL: http://mediaplayer.yahoo.com/js
+		Seemed to have a bug in all browsers except IE, where playing after pause restarts at 0
+	"Latest development version", old URL: http://mediaplayer.yahoo.com/latest 
+		Not used because I don't trust development versions
+	All new beta player, announced 8/4/11: http://webplayer.yahooapis.com/player-beta.js
+		Not used because I don't trust beta versions, plus couldn't find updated docs for API
+	This seems to work: 	
+-->	
+<script src="http://webplayer.yahooapis.com/player.js"></script>
+
+<!-- aap.js controls both the HTML5 and Yahoo players -->
+<script src="aap.js"></script>
+
+</head>
+
+<body>
+
+<div role="banner">
+	<h1>Accessible Audio Player (AAP) 2.1.3 Test Page</h1>
+</div>
+<div id="content">
+	<p>This is a test page for AAP, Terrill Thompson's fully accessible cross-browser media player that uses the HTML5 &lt;audio&gt; element for browsers that support it, and the Yahoo! Media Player for those that don't. Browsers that support neither degrade to a list of links to MP3 files. AAP is also available with an additional P as Accessible Audio Player Plugin (AAPP) 2.1.3, a WordPress plugin. For more information, see the <a href="http://terrillthompson.com/music/aap">AAP Home Page</a> on my music blog or my slightly more technical blog post <a href="http://terrillthompson.blogspot.com/2010/11/putting-it-all-together-accessible.html">Putting it all together: Accessible HTML5 Audio Player with Yahoo! Media Player Fallback</a>. 
+	</p>
+
+	<div id="main" role="main">
+
+		<!-- player HTML begins here -->
+		<div id="wrapper">		
+			<div id="aap-audio-container">
+				<audio id="aap-audio" preload="auto" tabindex="0">
+					<source type="audio/ogg" src="http://www.terrillthompson.com/music/audio/everyday.ogg"/>
+					<source type="audio/mpeg" src="http://www.terrillthompson.com/music/audio/everyday.mp3"/>
+				</audio>
+			</div>
+			<div id="aap-player" role="region" aria-label="Audio player">
+				<div id="aap-now-playing" role="alert"></div>
+				<div id="aap-controller"></div>
+				<ul id="aap-playlist">
+<!-- playlist that uses data-mp3 and data-ogg attributes.
+	This enables the mp3 and ogg files (or other file formats) to have unique paths & filenames...			
+					<li><a href="http://www.terrillthompson.com/music/audio/everyday.mp3"
+						data-mp3="http://www.terrillthompson.com/music/audio/everyday.mp3"
+						data-ogg="http://www.terrillthompson.com/music/audio/everyday.ogg"
+						data-format="mp3 ogg">Every Day</a></li>
+					<li><a href="http://www.terrillthompson.com/music/audio/paulallen.mp3"
+						data-mp3="http://www.terrillthompson.com/music/audio/paulallen.mp3"
+						data-ogg="http://www.terrillthompson.com/music/audio/paulallen.ogg"
+						data-format="mp3 ogg">The Paul Allen Song</a></li>
+					<li><a href="http://www.terrillthompson.com/music/audio/php70alpha.mp3"
+						data-mp3="http://www.terrillthompson.com/music/audio/php70alpha.mp3"
+						data-ogg="http://www.terrillthompson.com/music/audio/php70alpha.ogg"
+						data-format="mp3 ogg">PHP 7.0 Alpha</a></li>
+					<li><a href="http://www.terrillthompson.com/music/audio/curlyjoe.mp3"
+						data-mp3="http://www.terrillthompson.com/music/audio/curlyjoe.mp3"
+						data-ogg="http://www.terrillthompson.com/music/audio/curlyjoe.ogg"
+						data-format="mp3 ogg">Curly Joe</a></li>
+					<li><a href="http://www.terrillthompson.com/music/audio/frenchsong.mp3"
+						data-mp3="http://www.terrillthompson.com/music/audio/frenchsong.mp3"
+						data-ogg="http://www.terrillthompson.com/music/audio/frenchsong.ogg"
+						data-format="mp3 ogg" lang="fr">Une Chanson Française</a></li>
+					<li><a href="http://www.terrillthompson.com/music/audio/smallf.mp3"
+						data-mp3="http://www.terrillthompson.com/music/audio/smallf.mp3"
+						data-ogg="http://www.terrillthompson.com/music/audio/smallf.ogg"
+						data-format="mp3 ogg">Man With Small F (The Inaccessible PDF Song)</a></li>
+-->						
+<!-- playlist that just uses data-format attribute. 
+  All versions must have same path and filename, other than extension -->
+					<li><a href="http://www.terrillthompson.com/music/audio/everyday.mp3"
+						data-format="mp3 ogg">Every Day</a></li>
+					<li><a href="http://www.terrillthompson.com/music/audio/paulallen.mp3"
+						data-format="mp3 ogg">The Paul Allen Song</a></li>
+					<li><a href="http://www.terrillthompson.com/music/audio/php70alpha.mp3"
+						data-format="mp3 ogg">PHP 7.0 Alpha</a></li>
+					<li><a href="http://www.terrillthompson.com/music/audio/curlyjoe.mp3"
+						data-format="mp3 ogg">Curly Joe</a></li>
+					<li><a href="http://www.terrillthompson.com/music/audio/frenchsong.mp3"
+						data-format="mp3 ogg" lang="fr">Une Chanson Française</a></li>
+					<li><a href="http://www.terrillthompson.com/music/audio/smallf.mp3"
+						data-format="mp3 ogg">Man With Small F (The Inaccessible PDF Song)</a></li>
+				</ul>				
+				<div id="aap-status-bar" role="alert"></div>
+			</div><!--end #aap-player-->	
+		</div><!--end #wrapper-->
+		<div id="aap-debug"></div>
+		<!-- player HTML ends here -->
+		
+	</div><!-- end #main-->
+</div><!--end #content-->	
+</body>
+</html>

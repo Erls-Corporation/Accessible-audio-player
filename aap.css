@@ -1,0 +1,247 @@
+/* Stylesheet for Accessible Audio Player (AAP) 
+http://terrillthompson.com/music/aap
+Author: Terrill Thompson
+Version: 2.1.3
+Last update: September 10, 2011
+
+*/
+
+audio#aap-audio, 
+object#aap-flashPlayer { 
+	height: 1px;
+}
+#aap-player { 
+	font-family: Arial, Helvetica, sans-serif;
+	background-color: #000000; /* background color of player (appears on top & bottom) */
+	border: 1px solid #000000; /* border around entire player */
+	width: 467px; 
+	border-radius: 15px;
+	-moz-border-radius: 15px;
+}
+
+#aap-controller { 
+	position: relative;
+	border: 2px solid #4c4c4c; 
+	background-color: #3D3D3D; /* background color of controller bar */
+	width: 464px; 
+	height: 30px;
+	line-height: 30px;
+}
+
+audio#aap-audio { 
+	border: 2px solid #FFFFFF; /* masked against background until audio has focus */
+}
+
+#aap-controller input { 
+	border: 2px solid #000000; /* masked against background until input has focus*/
+	background-position: center center;
+	background-repeat: no-repeat;
+	position: absolute;
+}
+
+audio#aap-audio:focus, 
+audio#aap-audio:active, 
+audio#aap-audio:hover, 
+#aap-controller input:focus, 
+#aap-controller input:hover, 
+#aap-controller input:active {
+	border-color: #ffff00 !important; /* color of border when a control receives focus */
+}
+
+#aap-controller input#aap-playpause {
+	width: 34px;
+	height: 30px;
+	background-color: transparent;
+	background-image: url('images/audio_play.gif');
+	color: transparent;
+	top: 0px;
+	left: 0px;
+}
+
+#aap-controller #aap-seekBar { 
+	height: 26px;
+	background-color: transparent; 
+	top: 0px;
+	left: 40px;
+	width: 200px; 
+}
+
+#aap-controller input#aap-seekBack {
+	width: 34px;
+	height: 30px;
+	background-color: transparent;
+	background-image: url('images/audio_rewind.gif');
+	color: transparent;
+	top: 0px;
+	left: 40px;
+}
+
+#aap-controller input#aap-seekForward { 
+	width: 34px;
+	height: 30px;
+	background-color: transparent;
+	background-image: url('images/audio_forward.gif');
+	color: transparent;
+	top: 0px;
+	left: 80px;
+}
+
+
+#aap-controller span#aap-timer { 
+	/* contains both span#elapsedTime and span#duration */
+	position: absolute;
+	color: #ffffff;
+	width: 100px;
+	left: 250px;
+}
+
+#aap-controller input#aap-mute { 
+	width: 34px;
+	height: 30px;
+	background-color: transparent;
+	background-image: url('images/audio_volume.gif');
+	color: transparent;
+	top: 0px;
+	left: 360px; 
+	border-left-color: #848484; 
+}
+
+#aap-controller input#aap-volumeControl { 
+	/* not used, but here for future reference */
+	display: none;
+	height: 100px;
+	width: 30px;
+	background-color: #666666;
+	border: 2px solid #4c4c4c;
+	color: #ffffff;
+	left: 360px;
+	top: -105px;
+}
+
+#aap-controller input#aap-volumeUp {  
+	width: 34px;
+	height: 30px;
+	background-color: transparent;
+	background-image: url('images/audio_volumeUp.gif');
+	color: transparent;
+	top: 0px;
+	left: 395px;
+}
+
+#aap-controller input#aap-volumeDown { 
+	width: 34px;
+	height: 30px;
+	background-color: transparent;
+	background-image: url('images/audio_volumeDown.gif');
+	color: transparent;
+	top: 0px;
+	left: 430px;
+}
+
+#aap-playlist { 
+	font-size: 0.9em;
+	list-style-type: none;
+	margin: 0;
+	background-color: #FFFFFF;
+	padding: 5px 0;
+}
+
+#aap-playlist li { 
+	background-color: #DDDDDD; /* background color of each item in playlist */
+	margin: 5px;
+	padding: 5px;
+	border-radius: 15px;
+	-moz-border-radius: 15px;
+}
+
+#aap-playlist li.focus { 
+	background-color: #FFEEB3;  /* background color of playlist item that is currently playing */
+	font-weight: bold;
+}
+
+#aap-playlist a { 
+	width: 100%;
+	color: #333;
+	text-decoration: none;
+	margin: 0;
+	padding: 5px;
+}
+
+#aap-playlist a:hover, 
+#aap-playlist a:focus, 
+#aap-playlist a:active { 
+	width: 100%;
+	color: #000000; /* text color of playlist items when they have focus */
+	text-decoration: none;
+	font-weight: bold;
+	background-color: transparent; 
+}
+
+#aap-now-playing {
+	text-align: center;
+	font-weight: bold;
+	font-size: 1.1em;
+	color: #FFFFFF;
+	background-color: transparent; 
+	padding: 0.5em 0.5em 1em;
+}
+
+#aap-now-playing span { 
+	font-size: 0.9em;
+}
+
+#aap-player span#aap-status { 
+	float: right;
+	height: 30px;
+	color: #FFFFFF;
+	font-style: italic;
+	background-color: transparent;
+	top: 0px;
+	padding-right: 5px;
+}	
+
+#aap-player #aap-status-bar { 
+	background-color: transparent;
+	color: #FFFFFF;
+	font-size: 0.9em;
+	font-style: italic;
+	text-align: right;
+	padding: 0.5em 1em;
+}	
+
+.aap-offscreen { 
+	position:absolute;
+	left:-10000px;
+	top:auto;
+	width:1px;
+	height:1px;
+	overflow:hidden;
+}
+#aap-error { 
+	display: block;
+	background: #ffc;
+	border: 2px solid #000;
+	color: #FF0000;
+	margin: 0.75em;
+	padding: 0.5em;
+}
+#aap-debug { 
+	/* only displayed if useDebug is true (will appear dynamically) */
+	/* A completely separate div, not part of the player */
+	/* Stylize as you see fit */
+	display: none; 
+	float: left;
+	width: 20em;
+	border-left: 1px solid black;
+	margin: 0;
+	padding: 0 0.75em; 
+}
+#aap-debug-heading { 
+	font-size: 1.4em;
+	margin-top: 0;
+	margin-bottom: 0;
+}
+.disabled { 
+	opacity: 0.5;
+	filter:alpha(opacity=50); /* for IE */
+}
