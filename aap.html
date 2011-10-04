@@ -39,15 +39,13 @@ overflow:hidden;
 <!--	Fallback for browsers that don't support HTML5 audio is Yahoo! Media Player (YMP) -->
 <!-- Define variables for YMP (must be defined *before* calling player.js) -->
 <script>
-var volume = 0.5; //0 to 1, not too loud by default or you'll drown out screen readers
 var YMPParams = {
-volume:volume,
+volume:0.5,
 displaystate:3, //hide default Yahoo player - we want to use our own
 autoplay:false, //change to true to start playing automatically (also add autoplay attrib to <audio>)
 parse:false		//will parse mp3 links later if browser doesn't support HTML5 audio
 }
 </script>
-
 
 <!--
 YMP is an evolving product. As this is a fallback player, my aim is to
