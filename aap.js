@@ -945,7 +945,7 @@ var eTarget, eUrl, children, count, i, thisSongUrl;
 eTarget = e.target; //should be a link
 if (eTarget.nodeName == 'A') {
 eUrl = eTarget.getAttribute('href');
-children = playlist.childNodes;
+children = this.playlist.childNodes;
 count = 0;
 for (i = 0; i < children.length; i++) {
 if (children[i].nodeName == 'LI') {
