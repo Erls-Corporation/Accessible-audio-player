@@ -21,6 +21,7 @@ useYahoo: false,
 debug: '',
 log: '',
 numEvents: 0,
+volume: 0.5,
 // player will be programatically set either to "html5" or "yahoo".
 player: '',
 
