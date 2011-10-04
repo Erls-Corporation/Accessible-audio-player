@@ -9,153 +9,153 @@ http://mediaplayer.yahoo.com/api/
 */
 
 accessibleAudioPlayer = {
-  // User defined variables.
+// User defined variables.
 
-  // useDebug - set to true to display event log, otherwise set to false.
-  useDebug: true,
-  // useYahoo - set to true to always use the fallback Yahoo Media Player
-  // (RECOMMENDED FOR TESTING ONLY).
-  useYahoo: false,
+// useDebug - set to true to display event log, otherwise set to false.
+useDebug: true,
+// useYahoo - set to true to always use the fallback Yahoo Media Player
+// (RECOMMENDED FOR TESTING ONLY).
+useYahoo: false,
 
-  // end user-defined variables.
-  debug: '',
-  log: '',
-  numEvents: 0,
-  // player will be programatically set either to "html5" or "yahoo".
-  player: '',
+// end user-defined variables.
+debug: '',
+log: '',
+numEvents: 0,
+// player will be programatically set either to "html5" or "yahoo".
+player: '',
 
-  //id's of various components.
-  audioId: '',
-  playlistId: '',
-  nowPlayingId: '',
-  controllerId: '',
-  statusBarId: '',
-  debugId: '',
+//id's of various components.
+audioId: '',
+playlistId: '',
+nowPlayingId: '',
+controllerId: '',
+statusBarId: '',
+debugId: '',
 
-  // DOM objects of various components.
-  audio: '',
-  controller: '',
-  loading: false,
-  playpause: '',
-  seekBar: '',
-  seekBack: '',
-  seekForward: '',
-  //Number of seconds to seek forward or back.
-  seekInterval: 15,
-  timer: '',
-  elapsedTimeContainer: '',
-  elapsedTime: '',
-  duration: '',
-  durationContainer: '',
-  pauseTime: 0,
-  mute: '',
-  volumeUp: '',
-  volumeDown: '',
-  hasSlider: '',
-  numSongs: '',
-  songIndex: 0,
-  prevSongIndex: 0,
-  songId: '',
-  songTitle: '',
-  prevSongId: '',
-  prevSongTitle: '',
-  playlist: '',
-  nowPlayingDiv: '',
-  statusBar: '',
-  userClickedPlayPause: false,
-  userClickedLink: false,
-  autoplaying: false,
+// DOM objects of various components.
+audio: '',
+controller: '',
+loading: false,
+playpause: '',
+seekBar: '',
+seekBack: '',
+seekForward: '',
+//Number of seconds to seek forward or back.
+seekInterval: 15,
+timer: '',
+elapsedTimeContainer: '',
+elapsedTime: '',
+duration: '',
+durationContainer: '',
+pauseTime: 0,
+mute: '',
+volumeUp: '',
+volumeDown: '',
+hasSlider: '',
+numSongs: '',
+songIndex: 0,
+prevSongIndex: 0,
+songId: '',
+songTitle: '',
+prevSongId: '',
+prevSongTitle: '',
+playlist: '',
+nowPlayingDiv: '',
+statusBar: '',
+userClickedPlayPause: false,
+userClickedLink: false,
+autoplaying: false,
 
-  playButtonImage: 'images/audio_play.gif',
-  pauseButtonImage: 'images/audio_pause.gif',
-  volumeButtonImage: 'images/audio_volume.gif',
-  muteButtonImage: 'images/audio_mute.gif',
+playButtonImage: 'images/audio_play.gif',
+pauseButtonImage: 'images/audio_pause.gif',
+volumeButtonImage: 'images/audio_volume.gif',
+muteButtonImage: 'images/audio_mute.gif',
 
-  //vars used by Yahoo.
-  thisMediaObj: '',
+//vars used by Yahoo.
+thisMediaObj: '',
 
-  init: function () {
-    var sources, canPlaySourceType, i, audioSource, sourceType;
-    this.audioId = 'aap-audio'; 
-    this.playlistId = 'aap-playlist';
-    this.nowPlayingId = 'aap-now-playing';
-    this.controllerId = 'aap-controller';
-    this.statusBarId = 'aap-status-bar';
-    this.debugId = 'aap-debug';
+init: function () {
+var sources, canPlaySourceType, i, audioSource, sourceType;
+this.audioId = 'aap-audio';
+this.playlistId = 'aap-playlist';
+this.nowPlayingId = 'aap-now-playing';
+this.controllerId = 'aap-controller';
+this.statusBarId = 'aap-status-bar';
+this.debugId = 'aap-debug';
 
-    if (this.useDebug) {
-      this.setupDebug(this.debugId);
-    }
+if (this.useDebug) {
+this.setupDebug(this.debugId);
+}
 
-    this.audio = document.getElementById(this.audioId);
-    if (this.audio) {
-      this.controller = document.getElementById(this.controllerId);
-      this.nowPlayingDiv = document.getElementById(this.nowPlayingId);
-      this.playlist = document.getElementById(this.playlistId);
-      this.statusBar = document.getElementById(this.statusBarId);
-      this.numSongs = this.countSongs(this.playlist);
+this.audio = document.getElementById(this.audioId);
+if (this.audio) {
+this.controller = document.getElementById(this.controllerId);
+this.nowPlayingDiv = document.getElementById(this.nowPlayingId);
+this.playlist = document.getElementById(this.playlistId);
+this.statusBar = document.getElementById(this.statusBarId);
+this.numSongs = this.countSongs(this.playlist);
 
-      // Test to see if the browser supports html5 audio.
-      if (this.audio.canPlayType) {
-        // check canPlayType for all audio sources
-        sources = this.audio.getElementsByTagName('source');
-        canPlaySourceType = false;
-        for (i = 0; i < sources.length; i++) {
-          audioSource = sources[i];
-          sourceType = audioSource.getAttribute('type');
-          if (this.audio.canPlayType(sourceType)) {
-            canPlaySourceType = true;
-      }    
-        }
-        if ((!canPlaySourceType) && (sources.length == 1) && (sourceType == 'audio/mpeg')) {
-          //The only file type provided is an MP3, and this browser can't play
-        //    it in HTML5 audio player.
-          this.player = 'yahoo';
-          YAHOO.MediaPlayer.onAPIReady.subscribe(this.yahooInit);
-        }
-        else if ((this.numSongs > 1) && (this.isUserAgent('firefox/3') || this.isUserAgent('Firefox/2') || this.isUserAgent('Firefox/1'))) {
-          //This is Firefox 3 or earlier. It can play the current file type in
-          // HTML5 but it chokes on playlists.
-          //See here: https://developer.mozilla.org/forums/viewtopic.php?f=4&t=48
-          //Therefore, need to use Yahoo if there is more than one track in playlist.
-          this.player = 'yahoo';
-          YAHOO.MediaPlayer.onAPIReady.subscribe(this.yahooInit);
-        }
-        else if (this.useYahoo) {
-          this.player = 'yahoo';
-          // if forcing browser to use yahoo player, be sure html5 isn't set
-          // to autoplay. Otherwise, it will play, and so will Yahoo!.
-          if (this.audio.getAttribute('autoplay') != null) {
-            this.audio.removeAttribute('autoplay');
-          }
-          YAHOO.MediaPlayer.onAPIReady.subscribe(this.yahooInit);
-        }
-        else {
-          this.player = 'html5';
-          if (this.audio.getAttribute('autoplay') != null) {
-            this.autoplaying = true;
-          }
-        }
-      }
-      else {
-        //this browser does not support HTML5 audio at all.
-        this.player = 'yahoo';
-        YAHOO.MediaPlayer.onAPIReady.subscribe(this.yahooInit);
-      }
+// Test to see if the browser supports html5 audio.
+if (this.audio.canPlayType) {
+// check canPlayType for all audio sources
+sources = this.audio.getElementsByTagName('source');
+canPlaySourceType = false;
+for (i = 0; i < sources.length; i++) {
+audioSource = sources[i];
+sourceType = audioSource.getAttribute('type');
+if (this.audio.canPlayType(sourceType)) {
+canPlaySourceType = true;
+}
+}
+if ((!canPlaySourceType) && (sources.length == 1) && (sourceType == 'audio/mpeg')) {
+//The only file type provided is an MP3, and this browser can't play
+//    it in HTML5 audio player.
+this.player = 'yahoo';
+YAHOO.MediaPlayer.onAPIReady.subscribe(this.yahooInit);
+}
+else if ((this.numSongs > 1) && (this.isUserAgent('firefox/3') || this.isUserAgent('Firefox/2') || this.isUserAgent('Firefox/1'))) {
+//This is Firefox 3 or earlier. It can play the current file type in
+// HTML5 but it chokes on playlists.
+//See here: https://developer.mozilla.org/forums/viewtopic.php?f=4&t=48
+//Therefore, need to use Yahoo if there is more than one track in playlist.
+this.player = 'yahoo';
+YAHOO.MediaPlayer.onAPIReady.subscribe(this.yahooInit);
+}
+else if (this.useYahoo) {
+this.player = 'yahoo';
+// if forcing browser to use yahoo player, be sure html5 isn't set
+// to autoplay. Otherwise, it will play, and so will Yahoo!.
+if (this.audio.getAttribute('autoplay') != null) {
+this.audio.removeAttribute('autoplay');
+}
+YAHOO.MediaPlayer.onAPIReady.subscribe(this.yahooInit);
+}
+else {
+this.player = 'html5';
+if (this.audio.getAttribute('autoplay') != null) {
+this.autoplaying = true;
+}
+}
+}
+else {
+//this browser does not support HTML5 audio at all.
+this.player = 'yahoo';
+YAHOO.MediaPlayer.onAPIReady.subscribe(this.yahooInit);
+}
 
-       this.logit('Using player: ' + this.player);
-      this.addButtons();
-      this.addEventListeners();
+this.logit('Using player: ' + this.player);
+this.addButtons();
+this.addEventListeners();
 
-      if (this.player == 'html5') {
-        // most browsers at this point attempt to load the <audio> media source
-        // if successful, the "canplay" and "canplaythrough" events are
-        //   triggered. Other browsers (ahem) just sit there waiting for
-        // further instructions...
-        if (this.isUserAgent('chrome') || this.isUserAgent('opera')) {
-          this.playAudio(); //this doesn't play the audio - it just loads the selected track
-        }
-      }
+if (this.player == 'html5') {
+// most browsers at this point attempt to load the <audio> media source
+// if successful, the "canplay" and "canplaythrough" events are
+//   triggered. Other browsers (ahem) just sit there waiting for
+// further instructions...
+if (this.isUserAgent('chrome') || this.isUserAgent('opera')) {
+this.playAudio(); //this doesn't play the audio - it just loads the selected track
+}
+}
 }
 },
 
@@ -170,74 +170,74 @@ if (children[i].nodeName == 'LI') count++;
 return count;
 },
 
-  isUserAgent: function (which) {
-    var userAgent = navigator.userAgent.toLowerCase();
-    if (userAgent.indexOf(which)!=-1) {
-      return true;
-    }
-    else {
-      return false;
-    }
-  },
+isUserAgent: function (which) {
+var userAgent = navigator.userAgent.toLowerCase();
+if (userAgent.indexOf(which)!=-1) {
+return true;
+}
+else {
+return false;
+}
+},
 
-  yahooInit: function () {
-    //Get and set default values.
-    YAHOO.MediaPlayer.setVolume(this.volume);
+yahooInit: function () {
+//Get and set default values.
+YAHOO.MediaPlayer.setVolume(this.volume);
 
-    // Add listeners for Yahoo events
-    YAHOO.MediaPlayer.onMediaUpdate.subscribe(this.onMediaUpdateHandler);
-    YAHOO.MediaPlayer.onPlaylistUpdate.subscribe(this.onPlaylistUpdateHandler);
-    YAHOO.MediaPlayer.onTrackStart.subscribe(this.onTrackStartHandler);
-    YAHOO.MediaPlayer.onTrackPause.subscribe(this.onTrackPauseHandler);
-    YAHOO.MediaPlayer.onProgress.subscribe(this.onProgressHandler);
-    YAHOO.MediaPlayer.onTrackComplete.subscribe(this.onTrackCompleteHandler);
+// Add listeners for Yahoo events
+YAHOO.MediaPlayer.onMediaUpdate.subscribe(this.onMediaUpdateHandler);
+YAHOO.MediaPlayer.onPlaylistUpdate.subscribe(this.onPlaylistUpdateHandler);
+YAHOO.MediaPlayer.onTrackStart.subscribe(this.onTrackStartHandler);
+YAHOO.MediaPlayer.onTrackPause.subscribe(this.onTrackPauseHandler);
+YAHOO.MediaPlayer.onProgress.subscribe(this.onProgressHandler);
+YAHOO.MediaPlayer.onTrackComplete.subscribe(this.onTrackCompleteHandler);
 
-    //since parse was false initially, need to load media from playlist now.
-    YAHOO.MediaPlayer.addTracks(this.playlist,null,true);
-  },
+//since parse was false initially, need to load media from playlist now.
+YAHOO.MediaPlayer.addTracks(this.playlist,null,true);
+},
 
-  addEventListeners: function () {
-    //Handle clicks on playlist (HTML5 only - Yahoo playlist handled elsewhere).
-    if (this.player == 'html5') {
+addEventListeners: function () {
+//Handle clicks on playlist (HTML5 only - Yahoo playlist handled elsewhere).
+if (this.player == 'html5') {
 
-    // Save the current object context in $this for use with inner functions.
-    $this = this;
+// Save the current object context in $this for use with inner functions.
+$this = this;
 
-      if (this.playlist) {
-        if (this.playlist.addEventListener) {
-          this.playlist.addEventListener('click',function (e) {
-            if (e.preventDefault) {
-              e.preventDefault();
-            }
-            else {
-              e.returnValue = false; //??
-            }
-            $this.userClickedLink = true;
-              $this.logit('<strong>You clicked a title in the playlist</strong>');
-            $this.songIndex = $this.getSongIndex(e);
-            if ($this.numSongs == 1) {
-              $this.playAudio();
-            }
-            else if ($this.numSongs > 1) {
-              $this.swapSource(e.target);
-              $this.updatePlaylist($this.songIndex);
-            }
-          }, false);
-      }
-      else if (this.playlist.attachEvent) {
-        this.playlist.attachEvent('onclick',function (e) {
-          e.preventDefault();
-          $this.userClickedLink = true;
-            $this.logit('<strong>You clicked a title in the playlist</strong>');
-          $this.songIndex = $this.getSongIndex(e);
-          if ($this.numSongs == 1) {
-            $this.playAudio();
-          }
-          else if ($this.numSongs > 1) {
-            $this.swapSource(e.target);
-            $this.updatePlaylist($this.songIndex);
-          }
-        });
+if (this.playlist) {
+if (this.playlist.addEventListener) {
+this.playlist.addEventListener('click',function (e) {
+if (e.preventDefault) {
+e.preventDefault();
+}
+else {
+e.returnValue = false; //??
+}
+$this.userClickedLink = true;
+$this.logit('<strong>You clicked a title in the playlist</strong>');
+$this.songIndex = $this.getSongIndex(e);
+if ($this.numSongs == 1) {
+$this.playAudio();
+}
+else if ($this.numSongs > 1) {
+$this.swapSource(e.target);
+$this.updatePlaylist($this.songIndex);
+}
+}, false);
+}
+else if (this.playlist.attachEvent) {
+this.playlist.attachEvent('onclick',function (e) {
+e.preventDefault();
+$this.userClickedLink = true;
+$this.logit('<strong>You clicked a title in the playlist</strong>');
+$this.songIndex = $this.getSongIndex(e);
+if ($this.numSongs == 1) {
+$this.playAudio();
+}
+else if ($this.numSongs > 1) {
+$this.swapSource(e.target);
+$this.updatePlaylist($this.songIndex);
+}
+});
 }
 }
 }
@@ -512,9 +512,9 @@ $this.statusBar.innerHTML = 'Waiting';
 }
 },
 
-  addButtons: function () {
+addButtons: function () {
 var startTime;
-    // add HTML buttons to #controller.
+// add HTML buttons to #controller.
 this.playpause = document.createElement('input');
 this.playpause.setAttribute('type','button');
 this.playpause.setAttribute('id','aap-playpause');
