@@ -1569,13 +1569,3 @@ playNewAudio: function (trackUrl,trackTitle) {
 this.nowPlayingDiv.innerHTML = '<span>Selected Track:</span><br/>' + trackTitle;
 }
 };
-
-if (window.addEventListener) {
-window.addEventListener('load', function () {accessibleAudioPlayer.init();}, false);
-}
-else if (window.attachEvent) {
-window.attachEvent('onload', function () {accessibleAudioPlayer.init();});
-}
-else {
-document.addEventListener('load', function () {accessibleAudioPlayer.init();}, false);
-}

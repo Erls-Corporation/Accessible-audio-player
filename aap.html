@@ -66,6 +66,18 @@ body {
 <!-- aap.js controls both the HTML5 and Yahoo players -->
 <script src="aap.js"></script>
 
+<!-- Initialize the player -->
+<script>
+if (window.addEventListener) {
+window.addEventListener('load', function () {accessibleAudioPlayer.init();}, false);
+}
+else if (window.attachEvent) {
+window.attachEvent('onload', function () {accessibleAudioPlayer.init();});
+}
+else {
+document.addEventListener('load', function () {accessibleAudioPlayer.init();}, false);
+}
+</script>>
 </head>
 
 <body>
